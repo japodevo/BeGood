@@ -1,0 +1,33 @@
+{
+  "siteName": "RainCheck",
+  "tagline": "Vancouver's automated ticket deal radar",
+  "siteBase": "https://japodevo.github.io/BeGood/deals",
+  "city": "Vancouver",
+  "countryCode": "CA",
+  "tmCityQuery": "Vancouver",
+  "tmStateCode": "BC",
+  "currency": "$",
+  "lookAheadDays": 150,
+  "ntfy": {
+    "topic": "raincheck-yvr",
+    "dropThresholdPct": 10
+  },
+  "merchants": {
+    "ticketmaster": {
+      "label": "Ticketmaster",
+      "template": ""
+    },
+    "stubhub": {
+      "label": "StubHub",
+      "template": ""
+    },
+    "tickpick": {
+      "label": "TickPick",
+      "template": ""
+    }
+  },
+  "_notes": {
+    "template": "Affiliate tracking template per merchant. Use {url} as the encoded deep-link placeholder. Examples — Impact: https://ticketmaster.pxf.io/c/PUBID/ADID/CAMPID?u={url} · Partnerize: https://prf.hn/click/camref:CAMREF/destination:{url} · Leave empty to use plain links until your affiliate accounts are approved.",
+    "siteBase": "Change when you move to a custom domain. Used for canonical URLs and sitemap."
+  }
+}

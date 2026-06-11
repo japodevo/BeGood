@@ -1,0 +1,137 @@
+{
+  "updated": "2026-06-11",
+  "events": [
+    {
+      "id": "sh-153020454",
+      "src": "seed",
+      "name": "FIFA World Cup 2026 — Match at BC Place",
+      "date": "2026-06-13T21:00:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/153020454/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=FIFA%20World%20Cup%20Vancouver",
+        "tickpick": "https://www.tickpick.com/search?q=world%20cup%20vancouver"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 323
+        }
+      ],
+      "dropPct": 0,
+      "score": 58
+    },
+    {
+      "id": "sh-160413431",
+      "src": "seed",
+      "name": "Don Toliver",
+      "date": "2026-06-25T19:30:00",
+      "venue": "Rogers Arena",
+      "city": "Vancouver",
+      "genre": "Hip-Hop/Rap",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/160413431/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=Don%20Toliver",
+        "tickpick": "https://www.tickpick.com/search?q=don%20toliver"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 120
+        }
+      ],
+      "dropPct": 0,
+      "score": 50
+    },
+    {
+      "id": "sh-160227358",
+      "src": "seed",
+      "name": "Chris Stapleton",
+      "date": "2026-07-22T19:30:00",
+      "venue": "Rogers Arena",
+      "city": "Vancouver",
+      "genre": "Country",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/160227358/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=Chris%20Stapleton",
+        "tickpick": "https://www.tickpick.com/search?q=chris%20stapleton"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 309
+        }
+      ],
+      "dropPct": 0,
+      "score": 50
+    },
+    {
+      "id": "sh-159320062",
+      "src": "seed",
+      "name": "Nate Bargatze",
+      "date": "2026-07-23T19:00:00",
+      "venue": "Rogers Arena",
+      "city": "Vancouver",
+      "genre": "Comedy",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159320062/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=Nate%20Bargatze",
+        "tickpick": "https://www.tickpick.com/search?q=nate%20bargatze"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 41
+        }
+      ],
+      "dropPct": 0,
+      "score": 50
+    },
+    {
+      "id": "sh-159784074",
+      "src": "seed",
+      "name": "AC/DC",
+      "date": "2026-08-13T19:00:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Rock",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159784074/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=AC%2FDC%20Vancouver",
+        "tickpick": "https://www.tickpick.com/search?q=acdc%20vancouver"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 126
+        }
+      ],
+      "dropPct": 0,
+      "score": 47
+    },
+    {
+      "id": "sh-160770818",
+      "src": "seed",
+      "name": "Weezer",
+      "date": "2026-09-12T19:00:00",
+      "venue": "Rogers Arena",
+      "city": "Vancouver",
+      "genre": "Rock",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/160770818/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=Weezer%20Vancouver",
+        "tickpick": "https://www.tickpick.com/search?q=weezer%20vancouver"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 102
+        }
+      ],
+      "dropPct": 0,
+      "score": 53
+    }
+  ]
+}

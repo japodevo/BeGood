@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RainCheck — Vancouver's ticket deal radar. Live floor prices, updated daily.</title>
+<meta name="description" content="The cheapest ticket for every big Vancouver event — Canucks, concerts at Rogers Arena and BC Place, comedy and more. Floor prices tracked daily, price-drop alerts free.">
+<link rel="canonical" href="https://japodevo.github.io/BeGood/deals/index.html">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e1116;--card:#161b22;--card2:#1d242e;--border:#2a2f36;--text:#e8eaed;--muted:#9aa0a6;--accent:#5cc8ff;--green:#34d399;--amber:#fbbf24;--blue:#1a73e8}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:32px 20px 60px}
+header h1{font-size:30px;letter-spacing:-1px}
+header h1 .dot{color:var(--accent)}
+.tagline{color:var(--muted);font-size:14px;margin:4px 0 6px}
+.updated{font-size:12px;color:var(--muted)}
+.alert-cta{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:20px 0;cursor:pointer}
+.alert-cta:hover{border-color:var(--accent)}
+.alert-cta .bell{font-size:22px}
+.alert-cta b{font-size:14px}
+.alert-cta span{font-size:12px;color:var(--muted);display:block}
+.chips{display:flex;gap:8px;margin:18px 0 20px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:block;text-decoration:none;color:inherit}
+.card:hover{border-color:var(--accent)}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.ev-name{font-size:17px;font-weight:700;letter-spacing:-0.3px}
+.ev-meta{font-size:13px;color:var(--muted);margin-top:2px}
+.price-box{text-align:right;flex-shrink:0}
+.price{font-size:20px;font-weight:700;color:var(--green)}
+.from{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+.badges{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.badge.hot{background:rgba(251,191,36,0.15);color:var(--amber)}
+.badge.good{background:rgba(52,211,153,0.12);color:var(--green)}
+.badge.drop{background:rgba(52,211,153,0.12);color:var(--green)}
+.badge.genre{background:var(--card2);color:var(--muted);font-weight:600}
+.empty{color:var(--muted);text-align:center;padding:40px 0;font-size:14px}
+footer{margin-top:36px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:18px}
+footer a{color:var(--accent)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:420px;padding:24px}
+.modal h3{margin-bottom:10px}
+.modal p,.modal li{font-size:14px;color:var(--muted);margin-bottom:8px}
+.modal ol{padding-left:20px}
+.modal code{background:var(--card2);padding:2px 8px;border-radius:6px;color:var(--accent);font-size:13px}
+.modal button{margin-top:12px;width:100%;padding:11px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-weight:600;cursor:pointer;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>RainCheck<span class="dot">.</span></h1>
+    <div class="tagline">Vancouver's ticket deal radar — live floor prices for every big event, tracked daily.</div>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <div class="alert-cta" onclick="document.getElementById('alert-modal').style.display='flex'">
+    <div class="bell">🔔</div>
+    <div><b>Free price-drop alerts</b><span>Get pinged the moment a Vancouver event's floor price falls 10%+</span></div>
+  </div>
+
+  <div class="chips" id="chips"></div>
+  <div id="list"><div class="empty">Loading deals…</div></div>
+
+  <footer>
+    <p><b>How this works:</b> RainCheck checks the cheapest available ticket for major Vancouver events every day and scores each event on how good a deal it is right now versus comparable events and its own recent prices.</p>
+    <p><b>Disclosure:</b> some outbound links are affiliate links — if you buy after clicking, this site may earn a commission at no extra cost to you. Prices shown are floor prices at last refresh and can change at any time.</p>
+  </footer>
+</div>
+
+<div class="modal-bg" id="alert-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal">
+    <h3>🔔 Price-drop alerts</h3>
+    <p>Alerts are pushed through the free <a href="https://ntfy.sh" target="_blank" rel="noopener" style="color:var(--accent)">ntfy</a> app — no account, no email, no spam.</p>
+    <ol>
+      <li>Install <b>ntfy</b> (App Store / Play Store)</li>
+      <li>Tap + and subscribe to the topic:</li>
+    </ol>
+    <p style="text-align:center;margin:12px 0"><code id="topic-code">raincheck-yvr</code></p>
+    <p>That's it — you'll get a push whenever a tracked event's floor price drops 10% or more.</p>
+    <button onclick="document.getElementById('alert-modal').style.display='none'">Done</button>
+  </div>
+</div>
+
+<script>
+let CFG=null,DATA=null,filter='all';
+const FILTERS=[
+  {id:'all',label:'All'},
+  {id:'week',label:'This week'},
+  {id:'sports',label:'Sports'},
+  {id:'music',label:'Concerts'},
+  {id:'comedy',label:'Comedy'},
+  {id:'under100',label:'Under $100'}
+];
+const SPORT=/soccer|hockey|basketball|football|baseball|sport|nhl|mls/i;
+const COMEDY=/comedy|stand.?up/i;
+
+function slugify(s){return s.toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60)}
+function fmtDate(d){return new Date(d).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Vancouver'})}
+function trend(e){
+  const h=e.history||[];
+  if(h.length<2)return '';
+  const a=h[h.length-2].min,b=h[h.length-1].min;
+  if(b<a)return ' <span style="color:var(--green)">↓</span>';
+  if(b>a)return ' <span style="color:#f87171">↑</span>';
+  return '';
+}
+function matches(e){
+  const min=(e.history.at(-1)||{}).min;
+  if(filter==='week')return (new Date(e.date)-new Date())<7*86400000;
+  if(filter==='sports')return SPORT.test(e.genre);
+  if(filter==='comedy')return COMEDY.test(e.genre);
+  if(filter==='music')return !SPORT.test(e.genre)&&!COMEDY.test(e.genre);
+  if(filter==='under100')return min!=null&&min<100;
+  return true;
+}
+function render(){
+  document.getElementById('chips').innerHTML=FILTERS.map(f=>
+    `<button class="chip ${filter===f.id?'on':''}" onclick="filter='${f.id}';render()">${f.label}</button>`).join('');
+  const evs=DATA.events.filter(e=>new Date(e.date)>=new Date(new Date().toDateString())).filter(matches)
+    .sort((a,b)=>(b.score||0)-(a.score||0));
+  const cur=CFG.currency||'$';
+  document.getElementById('list').innerHTML=evs.length?evs.map(e=>{
+    const min=(e.history.at(-1)||{}).min;
+    const slug=slugify(e.name)+'-'+e.id;
+    const hot=e.score>=75,good=e.score>=60&&!hot;
+    return `<a class="card" href="e/${slug}.html">
+      <div class="row">
+        <div><div class="ev-name">${e.name}</div><div class="ev-meta">${e.venue} · ${fmtDate(e.date)}</div></div>
+        <div class="price-box"><div class="from">from</div><div class="price">${cur}${min!=null?min:'—'}${trend(e)}</div></div>
+      </div>
+      <div class="badges">
+        ${hot?'<span class="badge hot">🔥 Hot deal</span>':''}${good?'<span class="badge good">Good value</span>':''}
+        ${e.dropPct>0?`<span class="badge drop">↓ ${e.dropPct}% vs 14-day high</span>`:''}
+        <span class="badge genre">${e.genre}</span>
+      </div>
+    </a>`;
+  }).join(''):'<div class="empty">No events match this filter right now.</div>';
+}
+Promise.all([fetch('config.json').then(r=>r.json()),fetch('data.json').then(r=>r.json())]).then(([c,d])=>{
+  CFG=c;DATA=d;
+  document.getElementById('updated').textContent='Prices last refreshed '+d.updated+' · '+d.events.length+' events tracked';
+  document.getElementById('topic-code').textContent=c.ntfy?.topic||'raincheck-yvr';
+  render();
+});
+</script>
+</body>
+</html>
