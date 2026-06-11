@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BePaid">
+<title>BePaid — Commission Autopilot</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a9e72;--green-l:#e6f7f1;--green-d:#0f6e50;
+  --amber:#c97d10;--amber-l:#fdf3e3;
+  --red:#c0392b;--red-l:#fdecea;
+  --blue:#2474c4;--blue-l:#e8f2fc;
+  --purple:#6c5ce7;--purple-l:#f0eeff;
+  --gold:#c8941a;--gold-l:#fef9ec;
+  --bg:#f5f5f0;--card:#ffffff;--card2:#f0f0eb;
+  --text:#1a1a1a;--muted:#888880;--subtle:#bbbbb5;--xsubtle:#e0e0da;
+  --border:rgba(0,0,0,0.08);
+  --r:16px;--r-sm:10px;--r-xs:8px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#111110;--card:#1e1e1c;--card2:#2a2a28;
+    --text:#f0f0ec;--muted:#888880;--subtle:#555550;--xsubtle:#2a2a28;
+    --border:rgba(255,255,255,0.08);
+    --green-l:#0e2e22;--amber-l:#2e1f08;--red-l:#2e0f0f;--blue-l:#0a1e35;--purple-l:#1a1630;--gold-l:#2a1f08;
+  }
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+body{padding:env(safe-area-inset-top,44px) 0 env(safe-area-inset-bottom,20px)}
+#app{max-width:430px;margin:0 auto;padding:0 0 70px}
+.tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,4px)}
+.tab-btn{flex:1;padding:10px 0 6px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;color:var(--subtle);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;transition:color 0.15s}
+.tab-btn.active{color:var(--green)}
+.tab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tab-btn.active svg{stroke-width:2}
+.page{display:none;padding:24px 20px 16px;animation:fi 0.18s ease}
+.page.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-0.5px;margin-bottom:3px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);margin:18px 0 10px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:14px 16px;border:1px solid var(--border)}
+.stat-num{font-size:26px;font-weight:700;letter-spacing:-1px;line-height:1}
+.stat-num.g{color:var(--green)}
+.stat-num.a{color:var(--amber)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
+.banner{border-radius:var(--r);padding:14px 16px;margin-bottom:14px;border:1px solid transparent}
+.banner.green{background:var(--green-l);border-color:rgba(26,158,114,0.2);color:var(--green-d)}
+.banner p{font-size:14px;line-height:1.5;font-weight:500}
+/* DEAL CARDS */
+.deal-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;margin-bottom:10px}
+.deal-card.overdue{border-color:rgba(192,57,43,0.35)}
+.deal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;cursor:pointer}
+.d-name{font-size:15px;font-weight:600}
+.d-co{font-size:12px;color:var(--muted);margin-top:1px}
+.d-right{text-align:right;flex-shrink:0}
+.d-val{font-size:14px;font-weight:700}
+.d-comm{font-size:11px;color:var(--green);font-weight:600;margin-top:1px}
+.d-meta{display:flex;align-items:center;gap:6px;margin-top:9px;flex-wrap:wrap}
+.chip{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.chip.lead{background:var(--blue-l);color:var(--blue)}
+.chip.contacted{background:var(--purple-l);color:var(--purple)}
+.chip.meeting{background:var(--amber-l);color:var(--amber)}
+.chip.proposal{background:var(--gold-l);color:var(--gold)}
+.chip.won{background:var(--green-l);color:var(--green-d)}
+.chip.lost{background:var(--red-l);color:var(--red)}
+.d-due{font-size:11px;color:var(--muted)}
+.d-due.late{color:var(--red);font-weight:600}
+.d-actions{display:flex;gap:8px;margin-top:12px}
+.act-btn{flex:1;padding:9px 0;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card2);font-size:12.5px;font-weight:600;cursor:pointer;color:var(--text);-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:6px}
+.act-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.act-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.stage-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px}
+.stage-head .section-label{margin:0}
+.stage-sum{font-size:11px;color:var(--muted);font-weight:600}
+.add-fab{position:fixed;right:calc(50% - 215px + 16px);bottom:calc(64px + env(safe-area-inset-bottom,4px) + 12px);width:52px;height:52px;border-radius:50%;background:var(--green);border:none;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);z-index:90;-webkit-tap-highlight-color:transparent}
+@media(max-width:470px){.add-fab{right:16px}}
+.empty{font-size:13px;color:var(--muted);text-align:center;padding:26px 0;line-height:1.6}
+/* GOAL BAR */
+.goal-bar{height:10px;border-radius:6px;background:var(--xsubtle);overflow:hidden;margin-top:10px}
+.goal-fill{height:100%;background:var(--green);border-radius:6px;transition:width 0.3s}
+.hero-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:22px 20px;margin-bottom:16px}
+.hero-score{font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1;color:var(--green)}
+.hero-comment{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.stats-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:4px 16px;margin-bottom:20px}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px}
+.s-row:last-child{border-bottom:none}
+.s-lbl{color:var(--muted)}
+.s-val{font-weight:600}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border-radius:var(--r) var(--r) 0 0;width:100%;max-width:430px;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow-y:auto;animation:slideUp 0.2s ease}
+@keyframes slideUp{from{transform:translateY(40px)}to{transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--card2);cursor:pointer;color:var(--muted);font-size:18px;-webkit-tap-highlight-color:transparent}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--subtle);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;font-size:15px;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 12px;outline:none;font-family:inherit;-webkit-appearance:none}
+.field textarea{min-height:90px;resize:vertical;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.save-btn{width:100%;padding:14px 0;border-radius:var(--r-sm);border:none;background:var(--green);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;-webkit-tap-highlight-color:transparent}
+.danger-btn{width:100%;padding:12px 0;border-radius:var(--r-sm);border:1px solid rgba(192,57,43,0.3);background:var(--red-l);color:var(--red);font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;-webkit-tap-highlight-color:transparent}
+.log-list{margin-top:6px}
+.log-item{font-size:12px;color:var(--muted);padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:10px}
+.log-item:last-child{border:none}
+.log-date{flex-shrink:0;font-weight:600;color:var(--subtle)}
+/* SETTINGS */
+.settings-group{background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-bottom:20px;overflow:hidden}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
+.settings-row:last-child{border-bottom:none}
+.settings-row-label{font-size:15px}
+.settings-row-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.settings-row-left{flex:1}
+.time-picker{font-size:15px;font-weight:500;color:var(--green);background:none;border:none;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;text-align:right;min-width:60px;font-family:inherit}
+.text-input{width:100%;font-size:15px;color:var(--text);background:none;border:none;padding:0;outline:none;font-family:inherit}
+.text-input::placeholder{color:var(--subtle)}
+.ios-toggle{position:relative;width:51px;height:31px;flex-shrink:0}
+.ios-toggle input{opacity:0;width:0;height:0;position:absolute}
+.ios-toggle-track{position:absolute;inset:0;border-radius:31px;background:var(--xsubtle);transition:background 0.2s;cursor:pointer}
+.ios-toggle input:checked+.ios-toggle-track{background:var(--green)}
+.ios-toggle-thumb{position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:transform 0.2s;pointer-events:none}
+.ios-toggle input:checked~.ios-toggle-thumb{transform:translateX(20px)}
+.notif-note{font-size:12px;color:var(--muted);line-height:1.6;padding:12px 16px;background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-bottom:20px}
+.notif-note.ok{color:var(--green-d);background:var(--green-l);border-color:rgba(26,158,114,0.2)}
+.tmpl-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tmpl-tab{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);-webkit-tap-highlight-color:transparent}
+.tmpl-tab.on{background:var(--green);border-color:var(--green);color:#fff}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TODAY / AUTOPILOT -->
+  <div class="page active" id="page-today">
+    <div class="page-title">Autopilot</div>
+    <div class="page-sub" id="today-sub"></div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num a" id="t-due">0</div><div class="stat-lbl">Follow-ups due</div></div>
+      <div class="stat-card"><div class="stat-num g" id="t-pipe">$0</div><div class="stat-lbl">Commission in play</div></div>
+    </div>
+    <div class="section-label">Due now</div>
+    <div id="queue"></div>
+    <div class="section-label">Coming up</div>
+    <div id="upcoming"></div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="page" id="page-pipe">
+    <div class="page-title">Pipeline</div>
+    <div class="page-sub" id="pipe-sub"></div>
+    <div id="pipe-list"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="page" id="page-stats">
+    <div class="page-title">Earnings</div>
+    <div class="page-sub">Commission performance</div>
+    <div class="hero-card">
+      <div class="stat-lbl" style="margin-bottom:6px">Commission won this month</div>
+      <div class="hero-score" id="e-month">$0</div>
+      <div class="goal-bar"><div class="goal-fill" id="e-goal-fill" style="width:0%"></div></div>
+      <div class="hero-comment" id="e-goal-txt"></div>
+    </div>
+    <div class="stats-card" id="e-rows"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-set">
+    <div class="page-title">Settings</div>
+    <div class="page-sub">Autopilot configuration</div>
+
+    <div class="section-label">Profile</div>
+    <div class="settings-group">
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">Your name</div><div class="settings-row-sub">Used to sign generated emails</div></div>
+        <input class="time-picker text-input" style="max-width:140px" id="set-name" placeholder="James" onchange="setS('me',this.value)"></div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">Default commission %</div></div>
+        <input class="time-picker text-input" style="max-width:70px" type="number" id="set-rate" onchange="setS('rate',parseFloat(this.value)||0)"></div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">Monthly goal</div><div class="settings-row-sub">Commission target</div></div>
+        <input class="time-picker text-input" style="max-width:110px" type="number" id="set-goal" onchange="setS('goal',parseFloat(this.value)||0)"></div>
+    </div>
+
+    <div class="section-label">Follow-up cadence (days)</div>
+    <div class="settings-group" id="cad-rows"></div>
+
+    <div class="section-label">Email templates</div>
+    <div class="tmpl-tabs" id="tmpl-tabs"></div>
+    <div class="field"><label>Subject</label><input id="tmpl-subj" onchange="saveTmpl()"></div>
+    <div class="field"><label>Body — use {first} {name} {company} {value} {me}</label><textarea id="tmpl-body" onchange="saveTmpl()"></textarea></div>
+
+    <div class="section-label">Notifications</div>
+    <div class="settings-group">
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">Daily digest time</div></div>
+        <input class="time-picker" type="time" id="set-digest" onchange="setS('digestTime',this.value)"></div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">ntfy topic</div><div class="settings-row-sub">Your private ntfy channel name</div></div>
+        <input class="time-picker text-input" style="max-width:160px" id="set-ntfy" placeholder="bepaid-james-2026" onchange="setS('ntfyTopic',this.value.trim())"></div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">ntfy notifications</div><div class="settings-row-sub">Background alerts via ntfy app</div></div>
+        <label class="ios-toggle"><input type="checkbox" id="set-ntfy-on" onchange="setS('ntfyEnabled',this.checked)"><span class="ios-toggle-track"></span><span class="ios-toggle-thumb"></span></label></div>
+    </div>
+    <div class="notif-note" id="ntfy-note"></div>
+
+    <div class="section-label">Data</div>
+    <div class="settings-group">
+      <div class="settings-row" style="cursor:pointer" onclick="exportData()"><div class="settings-row-label">Export JSON</div></div>
+      <div class="settings-row" style="cursor:pointer" onclick="document.getElementById('imp').click()"><div class="settings-row-label">Import JSON</div></div>
+    </div>
+    <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(this)">
+  </div>
+
+  <button class="add-fab" onclick="openDeal()">+</button>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="go('today',this)"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7z"/></svg>Autopilot</button>
+  <button class="tab-btn" onclick="go('pipe',this)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Pipeline</button>
+  <button class="tab-btn" onclick="go('stats',this)"><svg viewBox="0 0 24 24"><path d="M3 20h18M6 16v-5m5 5V8m5 8v-3m5 3V5"/></svg>Earnings</button>
+  <button class="tab-btn" onclick="go('set',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+</div>
+
+<div id="modal-root"></div>
+
+<script>
+// ── STAGES ────────────────────────────────────────────────────────────────
+const ST=[
+  {id:'lead',     name:'New Lead', cad:2, prob:0.10},
+  {id:'contacted',name:'Contacted',cad:3, prob:0.25},
+  {id:'meeting',  name:'Meeting',  cad:1, prob:0.50},
+  {id:'proposal', name:'Proposal', cad:2, prob:0.70},
+  {id:'won',      name:'Won',      cad:0, prob:1},
+  {id:'lost',     name:'Lost',     cad:0, prob:0}
+];
+const ACTIVE=['lead','contacted','meeting','proposal'];
+const stg=id=>ST.find(s=>s.id===id)||ST[0];
+
+const DEFAULT_TMPL={
+  lead:{subj:'Quick question, {first}',body:'Hi {first},\n\nReaching out about {company} — I think there is a fit worth a short conversation. Do you have 15 minutes this week?\n\n{me}'},
+  contacted:{subj:'Following up, {first}',body:'Hi {first},\n\nFollowing up on my last note. Happy to work around your schedule if a quick call is easier than email.\n\n{me}'},
+  meeting:{subj:'Next steps for {company}',body:'Hi {first},\n\nThanks again for the time. As discussed, I will get the details over to you shortly — and if any questions come up in the meantime, I am one reply away.\n\n{me}'},
+  proposal:{subj:'Proposal for {company} — any questions?',body:'Hi {first},\n\nChecking in on the proposal I sent over. Is there anything you would like me to adjust or clarify to make the decision easier?\n\n{me}'}
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+const KEY='bepaid-v1';
+let S=load();
+function load(){
+  try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);migrate(s);return s;}}catch(e){}
+  const s={deals:[],tmpl:JSON.parse(JSON.stringify(DEFAULT_TMPL)),cad:{},me:'',rate:10,goal:5000,cur:'$',
+    digestTime:'08:30',ntfyTopic:'',ntfyEnabled:false,_lastPush:'',_schedFor:''};
+  ST.forEach(x=>{if(x.cad)s.cad[x.id]=x.cad;});
+  migrate(s);return s;
+}
+function migrate(s){
+  if(!s.tmpl)s.tmpl=JSON.parse(JSON.stringify(DEFAULT_TMPL));
+  if(!s.cad)s.cad={};
+  ACTIVE.forEach(id=>{if(!s.cad[id])s.cad[id]=stg(id).cad;});
+  if(!s.deals)s.deals=[];
+  if(s.rate===undefined)s.rate=10;
+  if(s.goal===undefined)s.goal=5000;
+  if(!s.cur)s.cur='$';
+  if(!s.digestTime)s.digestTime='08:30';
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function setS(k,v){S[k]=v;save();renderAll();autopilot();}
+
+// ── DATE HELPERS ──────────────────────────────────────────────────────────
+const ds=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
+const today=()=>ds(new Date());
+const addDays=(dstr,n)=>{const x=new Date(dstr+'T12:00:00');x.setDate(x.getDate()+n);return ds(x);};
+const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);
+const money=n=>S.cur+Math.round(n).toLocaleString();
+
+// ── DEAL LOGIC ────────────────────────────────────────────────────────────
+function nextDue(d){
+  if(!ACTIVE.includes(d.stage))return null;
+  if(d.snoozeUntil&&d.snoozeUntil>today())return d.snoozeUntil;
+  return addDays(d.lastTouch||d.created,S.cad[d.stage]||2);
+}
+function commission(d){return (d.value||0)*((d.rateOverride!=null?d.rateOverride:S.rate)/100);}
+function dueDeals(){return S.deals.filter(d=>ACTIVE.includes(d.stage)&&nextDue(d)<=today()).sort((a,b)=>nextDue(a)<nextDue(b)?-1:1);}
+function upcomingDeals(){return S.deals.filter(d=>ACTIVE.includes(d.stage)&&nextDue(d)>today()).sort((a,b)=>nextDue(a)<nextDue(b)?-1:1);}
+function logTouch(d,kind,txt){d.log=d.log||[];d.log.unshift({t:today(),kind,txt});d.lastTouch=today();d.snoozeUntil=null;}
+
+// ── EMAIL GENERATION ──────────────────────────────────────────────────────
+function fill(t,d){
+  const first=(d.name||'').split(' ')[0];
+  return t.replace(/{first}/g,first||'there').replace(/{name}/g,d.name||'').replace(/{company}/g,d.company||'your team')
+          .replace(/{value}/g,money(d.value||0)).replace(/{me}/g,S.me||'');
+}
+function draftEmail(id){
+  const d=S.deals.find(x=>x.id===id);if(!d)return;
+  const t=S.tmpl[d.stage]||S.tmpl.contacted;
+  const subj=fill(t.subj,d),body=fill(t.body,d);
+  logTouch(d,'email','Drafted: '+subj);save();
+  const gm='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(d.email||'')+'&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+  window.open(gm,'_blank');
+  renderAll();
+}
+function markDone(id){const d=S.deals.find(x=>x.id===id);if(!d)return;logTouch(d,'touch','Followed up');save();renderAll();autopilot();}
+function snooze(id){const d=S.deals.find(x=>x.id===id);if(!d)return;d.snoozeUntil=addDays(today(),1);d.log=d.log||[];d.log.unshift({t:today(),kind:'snooze',txt:'Snoozed 1 day'});save();renderAll();autopilot();}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function go(p,btn){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelector('.add-fab').style.display=(p==='today'||p==='pipe')?'block':'none';
+}
+function dealCard(d,withActions){
+  const nd=nextDue(d),late=nd&&nd<today(),dl=late?daysBetween(nd,today()):0;
+  return `<div class="deal-card ${late?'overdue':''}">
+    <div class="deal-top" onclick="openDeal('${d.id}')">
+      <div><div class="d-name">${esc(d.name)}</div><div class="d-co">${esc(d.company||'')}</div></div>
+      <div class="d-right"><div class="d-val">${money(d.value||0)}</div><div class="d-comm">${money(commission(d))} comm.</div></div>
+    </div>
+    <div class="d-meta"><span class="chip ${d.stage}">${stg(d.stage).name}</span>
+      ${nd?`<span class="d-due ${late?'late':''}">${late?dl+'d overdue':nd===today()?'due today':'due '+nd}</span>`:''}
+    </div>
+    ${withActions?`<div class="d-actions">
+      <button class="act-btn primary" onclick="draftEmail('${d.id}')"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z M4 6l8 7 8-7"/></svg>Draft email</button>
+      <button class="act-btn" onclick="markDone('${d.id}')">✓ Done</button>
+      <button class="act-btn" onclick="snooze('${d.id}')">Snooze</button>
+    </div>`:''}
+  </div>`;
+}
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function renderToday(){
+  const due=dueDeals(),up=upcomingDeals().slice(0,5);
+  const inPlay=S.deals.filter(d=>ACTIVE.includes(d.stage)).reduce((a,d)=>a+commission(d),0);
+  document.getElementById('t-due').textContent=due.length;
+  document.getElementById('t-pipe').textContent=money(inPlay);
+  document.getElementById('today-sub').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('queue').innerHTML=due.length?due.map(d=>dealCard(d,true)).join(''):
+    `<div class="banner green"><p>All caught up. Autopilot has nothing due — go close something.</p></div>`;
+  document.getElementById('upcoming').innerHTML=up.length?up.map(d=>dealCard(d,false)).join(''):`<div class="empty">Nothing scheduled. Add leads to feed the machine.</div>`;
+}
+function renderPipe(){
+  const el=document.getElementById('pipe-list');let h='';
+  const act=S.deals.filter(d=>ACTIVE.includes(d.stage));
+  const tot=act.reduce((a,d)=>a+(d.value||0),0);
+  document.getElementById('pipe-sub').textContent=act.length+' active deals · '+money(tot)+' total value';
+  ST.forEach(s=>{
+    const list=S.deals.filter(d=>d.stage===s.id);
+    if(!list.length&&!ACTIVE.includes(s.id))return;
+    const v=list.reduce((a,d)=>a+(d.value||0),0);
+    h+=`<div class="stage-head"><div class="section-label">${s.name}</div><div class="stage-sum">${list.length} · ${money(v)}</div></div>`;
+    h+=list.length?list.map(d=>dealCard(d,false)).join(''):`<div class="empty">Empty</div>`;
+  });
+  el.innerHTML=h||'<div class="empty">No deals yet. Tap + to add your first lead.</div>';
+}
+function renderStats(){
+  const m=today().slice(0,7);
+  const wonM=S.deals.filter(d=>d.stage==='won'&&(d.wonAt||'').slice(0,7)===m);
+  const earned=wonM.reduce((a,d)=>a+commission(d),0);
+  const act=S.deals.filter(d=>ACTIVE.includes(d.stage));
+  const pipe=act.reduce((a,d)=>a+(d.value||0),0);
+  const weighted=act.reduce((a,d)=>a+commission(d)*stg(d.stage).prob,0);
+  const won=S.deals.filter(d=>d.stage==='won').length,lost=S.deals.filter(d=>d.stage==='lost').length;
+  const wr=(won+lost)?Math.round(100*won/(won+lost)):0;
+  const wk=addDays(today(),-7);
+  const touches=S.deals.reduce((a,d)=>a+((d.log||[]).filter(l=>l.t>=wk&&(l.kind==='email'||l.kind==='touch')).length),0);
+  document.getElementById('e-month').textContent=money(earned);
+  const pct=S.goal?Math.min(100,Math.round(100*earned/S.goal)):0;
+  document.getElementById('e-goal-fill').style.width=pct+'%';
+  document.getElementById('e-goal-txt').textContent=S.goal?pct+'% of your '+money(S.goal)+' monthly goal':'Set a monthly goal in Settings.';
+  document.getElementById('e-rows').innerHTML=[
+    ['Active pipeline value',money(pipe)],
+    ['Weighted commission forecast',money(weighted)],
+    ['Deals won (all time)',won],
+    ['Win rate',wr+'%'],
+    ['Follow-ups sent (7 days)',touches],
+    ['Avg deal size',act.length?money(pipe/act.length):S.cur+'0']
+  ].map(r=>`<div class="s-row"><span class="s-lbl">${r[0]}</span><span class="s-val">${r[1]}</span></div>`).join('');
+}
+let tmplSel='lead';
+function renderSettings(){
+  document.getElementById('set-name').value=S.me||'';
+  document.getElementById('set-rate').value=S.rate;
+  document.getElementById('set-goal').value=S.goal;
+  document.getElementById('set-digest').value=S.digestTime;
+  document.getElementById('set-ntfy').value=S.ntfyTopic||'';
+  document.getElementById('set-ntfy-on').checked=!!S.ntfyEnabled;
+  const n=document.getElementById('ntfy-note');
+  if(S.ntfyEnabled&&S.ntfyTopic){n.textContent='Autopilot will push your follow-up digest to ntfy each morning, even when this app is closed (scheduled up to 3 days ahead while the app is open).';n.className='notif-note ok';}
+  else{n.textContent='Enter an ntfy topic and turn on to get background follow-up alerts via the ntfy app.';n.className='notif-note';}
+  document.getElementById('cad-rows').innerHTML=ACTIVE.map(id=>
+    `<div class="settings-row"><div class="settings-row-left"><div class="settings-row-label">${stg(id).name}</div><div class="settings-row-sub">Follow up every</div></div>
+     <input class="time-picker text-input" style="max-width:60px" type="number" min="1" value="${S.cad[id]}" onchange="S.cad['${id}']=Math.max(1,parseInt(this.value)||1);save();renderAll();"></div>`).join('');
+  document.getElementById('tmpl-tabs').innerHTML=ACTIVE.map(id=>
+    `<button class="tmpl-tab ${tmplSel===id?'on':''}" onclick="tmplSel='${id}';renderSettings()">${stg(id).name}</button>`).join('');
+  document.getElementById('tmpl-subj').value=S.tmpl[tmplSel].subj;
+  document.getElementById('tmpl-body').value=S.tmpl[tmplSel].body;
+}
+function saveTmpl(){S.tmpl[tmplSel]={subj:document.getElementById('tmpl-subj').value,body:document.getElementById('tmpl-body').value};save();}
+function renderAll(){renderToday();renderPipe();renderStats();renderSettings();}
+
+// ── DEAL MODAL ────────────────────────────────────────────────────────────
+function openDeal(id){
+  const d=id?S.deals.find(x=>x.id===id):null;
+  const root=document.getElementById('modal-root');
+  root.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header"><div class="modal-title">${d?'Edit deal':'New lead'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="field"><label>Contact name</label><input id="f-name" value="${d?esc(d.name):''}" placeholder="Jane Smith"></div>
+      <div class="field"><label>Company</label><input id="f-co" value="${d?esc(d.company||''):''}" placeholder="Acme Inc"></div>
+      <div class="field"><label>Email</label><input id="f-email" type="email" value="${d?esc(d.email||''):''}" placeholder="jane@acme.com"></div>
+      <div class="field-row">
+        <div class="field"><label>Deal value</label><input id="f-val" type="number" value="${d?(d.value||''):''}" placeholder="10000"></div>
+        <div class="field"><label>Commission % </label><input id="f-rate" type="number" value="${d&&d.rateOverride!=null?d.rateOverride:''}" placeholder="${S.rate}"></div>
+      </div>
+      <div class="field"><label>Stage</label><select id="f-stage">${ST.map(s=>`<option value="${s.id}" ${d&&d.stage===s.id?'selected':''}>${s.name}</option>`).join('')}</select></div>
+      <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Context, objections, next steps…">${d?esc(d.notes||''):''}</textarea></div>
+      <button class="save-btn" onclick="saveDeal('${d?d.id:''}')">${d?'Save changes':'Add to pipeline'}</button>
+      ${d?`<button class="danger-btn" onclick="delDeal('${d.id}')">Delete deal</button>
+      <div class="section-label" style="margin-top:18px">Activity</div>
+      <div class="log-list">${(d.log||[]).slice(0,12).map(l=>`<div class="log-item"><span class="log-date">${l.t.slice(5)}</span><span>${esc(l.txt)}</span></div>`).join('')||'<div class="empty">No activity yet</div>'}</div>`:''}
+    </div></div>`;
+}
+function closeModal(){document.getElementById('modal-root').innerHTML='';}
+function saveDeal(id){
+  const v=k=>document.getElementById(k).value;
+  const stage=v('f-stage');
+  let d=id?S.deals.find(x=>x.id===id):null;
+  if(!d){
+    d={id:'d'+Date.now().toString(36),created:today(),lastTouch:today(),log:[{t:today(),kind:'stage',txt:'Added to pipeline'}]};
+    S.deals.unshift(d);
+  }
+  if(d.stage&&d.stage!==stage){d.log=d.log||[];d.log.unshift({t:today(),kind:'stage',txt:'Moved to '+stg(stage).name});d.lastTouch=today();}
+  if(stage==='won'&&d.stage!=='won')d.wonAt=today();
+  d.name=v('f-name').trim();d.company=v('f-co').trim();d.email=v('f-email').trim();
+  d.value=parseFloat(v('f-val'))||0;
+  d.rateOverride=v('f-rate')===''?null:parseFloat(v('f-rate'));
+  d.stage=stage;d.notes=v('f-notes');
+  save();closeModal();renderAll();autopilot();
+}
+function delDeal(id){if(!confirm('Delete this deal?'))return;S.deals=S.deals.filter(x=>x.id!==id);save();closeModal();renderAll();}
+
+// ── AUTOPILOT ENGINE (notifications) ─────────────────────────────────────
+let timers=[];
+function digestText(){
+  const due=dueDeals();
+  if(!due.length)return null;
+  const comm=due.reduce((a,d)=>a+commission(d),0);
+  return due.length+' follow-up'+(due.length>1?'s':'')+' due — '+money(comm)+' in commission on the line. Top: '+
+    due.slice(0,3).map(d=>d.name+' ('+stg(d.stage).name+')').join(', ');
+}
+async function ntfyPush(body,delaySec){
+  if(!S.ntfyEnabled||!S.ntfyTopic)return;
+  const h={'Title':'BePaid Autopilot','Priority':'high'};
+  if(delaySec)h['Delay']=delaySec+'s';
+  try{await fetch('https://ntfy.sh/'+S.ntfyTopic,{method:'POST',body,headers:h});}catch(e){}
+}
+function autopilot(){
+  timers.forEach(clearTimeout);timers=[];
+  if(!S.ntfyEnabled||!S.ntfyTopic)return;
+  // 1. instant push if follow-ups are due and we haven't pushed today
+  const txt=digestText();
+  if(txt&&S._lastPush!==today()){S._lastPush=today();save();ntfyPush(txt);}
+  // 2. schedule tomorrow's digest server-side (ntfy delayed delivery) so it
+  //    arrives even if the app stays closed; guard against double-scheduling
+  const tmr=addDays(today(),1);
+  if(S._schedFor!==tmr){
+    const[h,m]=(S.digestTime||'08:30').split(':').map(Number);
+    const t=new Date();t.setDate(t.getDate()+1);t.setHours(h,m,0,0);
+    const sec=Math.round((t-new Date())/1000);
+    if(sec>0&&sec<259200){
+      S._schedFor=tmr;save();
+      ntfyPush('Autopilot check-in: open BePaid to see today\'s follow-up queue.',sec);
+    }
+  }
+  // 3. same-day digest while app is open
+  const[h,m]=(S.digestTime||'08:30').split(':').map(Number);
+  const t=new Date();t.setHours(h,m,0,0);
+  const ms=t-new Date();
+  if(ms>0&&ms<86400000)timers.push(setTimeout(()=>{const x=digestText();if(x)ntfyPush(x);},ms));
+}
+
+// ── DATA ──────────────────────────────────────────────────────────────────
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bepaid-'+today()+'.json';a.click();
+}
+function importData(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const s=JSON.parse(r.result);migrate(s);S=s;save();renderAll();autopilot();}catch(e){alert('Invalid file');}};
+  r.readAsText(f);
+}
+
+renderAll();autopilot();
+</script>
+</body>
+</html>
