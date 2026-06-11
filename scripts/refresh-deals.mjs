@@ -180,13 +180,27 @@ async function ntfy(topic, msg, click) {
     await fetch("https://ntfy.sh/" + topic, { method: "POST", body: msg, headers });
   } catch (err) { console.error("ntfy error", err.message); }
 }
+async function telegram(msg, link) {
+  const tok = process.env.TELEGRAM_BOT_TOKEN, chat = process.env.TELEGRAM_CHAT_ID;
+  if (!tok || !chat) return;
+  if (!NTFY_ENABLE) { console.log("[dry-run telegram]", msg); return; }
+  try {
+    await fetch(`https://api.telegram.org/bot${tok}/sendMessage`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chat, text: msg + (link ? "\n" + link : "") }),
+    });
+  } catch (err) { console.error("telegram error", err.message); }
+}
+async function broadcast(msg, link) {
+  await ntfy(config.ntfy?.topic, msg, link);
+  await telegram(msg, link);
+}
 function feedItem(title, link, desc) {
   data.feedItems ||= [];
   data.feedItems.push({ d: today, title, link, desc });
   if (data.feedItems.length > 60) data.feedItems = data.feedItems.slice(-60);
 }
 async function alerts(added, hadTmDataBefore) {
-  const topic = config.ntfy?.topic;
   const threshold = config.ntfy?.dropThresholdPct ?? 10;
   // price drops
   const drops = data.events.filter(e => {
@@ -199,18 +213,18 @@ async function alerts(added, hadTmDataBefore) {
     const prev = e.history.at(-2).min, cur = e.history.at(-1).min;
     const pct = Math.round(((prev - cur) / prev) * 100);
     const msg = `${e.name} @ ${e.venue} dropped ${pct}% — now ${config.currency}${cur} (was ${config.currency}${prev})`;
-    await ntfy(topic, msg, pageUrl(e));
+    await broadcast(msg, pageUrl(e));
     feedItem(`↓ ${pct}%: ${e.name} now ${config.currency}${cur}`, pageUrl(e), `${e.venue}, ${e.date.slice(0, 10)} — floor price dropped from ${config.currency}${prev} to ${config.currency}${cur}.`);
   }
   if (drops.length) console.log(`Alerted ${Math.min(drops.length, 5)} price drop(s).`);
   // new events — skip on first activation run so 200 events don't spam the topic
   if (config.ntfy?.newEventAlerts && hadTmDataBefore && added.length) {
     if (added.length > 5) {
-      await ntfy(topic, `${added.length} new ${config.city} events just went on sale — see what's worth grabbing early.`, config.siteBase + "/index.html");
+      await broadcast(`${added.length} new ${config.city} events just went on sale — see what's worth grabbing early.`, config.siteBase + "/index.html");
     } else {
       for (const e of added.slice(0, 3)) {
         const min = curMin(e);
-        await ntfy(topic, `New on sale: ${e.name} @ ${e.venue}${min != null ? ` from ${config.currency}${min}` : ""}`, pageUrl(e));
+        await broadcast(`New on sale: ${e.name} @ ${e.venue}${min != null ? ` from ${config.currency}${min}` : ""}`, pageUrl(e));
       }
     }
     for (const e of added.slice(0, 10)) {
@@ -286,7 +300,14 @@ ${e.dropPct > 0 ? `<div style="color:#34d399;font-size:13px;font-weight:600">↓
 <title>Cheapest ${esc(e.name)} tickets — ${esc(e.venue)}, ${fmtDate(e.date)} | ${esc(config.siteName)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(url)}">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="${esc(config.siteName)} deals feed" href="../feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(config.siteName)}">
+<meta property="og:title" content="${esc(e.name)} — floor price ${min != null ? config.currency + min : "tracker"} | ${esc(config.siteName)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${esc(url)}">
+<meta property="og:image" content="${esc(config.siteBase)}/og.png">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 ${goatTag()}
 <style>body{font-family:-apple-system,system-ui,sans-serif;background:#0e1116;color:#e8eaed;max-width:680px;margin:0 auto;padding:28px 20px;line-height:1.55}
@@ -295,7 +316,10 @@ a{color:#5cc8ff}h1{font-size:24px;letter-spacing:-0.5px;margin-bottom:4px}.sub{c
 .buy{display:block;background:#1a73e8;color:#fff;text-decoration:none;text-align:center;padding:13px;border-radius:10px;font-weight:600;margin:10px 0}
 .buy:first-of-type{background:#1a9e72}
 table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}td{padding:7px 4px;border-bottom:1px solid #2a2f36;color:#bdc1c6}
-.note{font-size:12px;color:#9aa0a6;margin-top:24px}.back{font-size:13px}</style></head><body>
+.note{font-size:12px;color:#9aa0a6;margin-top:24px}.back{font-size:13px}
+.brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;letter-spacing:-0.4px;text-decoration:none;color:#e8eaed;margin-bottom:18px}
+.brand img{width:22px;height:22px}.brand .dot{color:#5cc8ff}</style></head><body>
+<a class="brand" href="../index.html"><img src="../favicon.svg" alt="">${esc(config.siteName)}<span class="dot">.</span></a>
 <a class="back" href="../index.html">← All ${esc(e.city)} deals</a>
 <h1>${esc(e.name)}</h1>
 <div class="sub">${esc(e.venue)} · ${fmtDate(e.date)} · ${esc(e.genre)}</div>
@@ -331,6 +355,98 @@ function bakeIndex() {
     (_, a, b) => `${a}Prices last refreshed ${data.updated} · ${upcoming.length} events tracked${b}`);
   fs.writeFileSync(idx, html);
 }
+const WC = /world\s*cup/i;
+function renderWorldCup() {
+  const matches = data.events.filter(e => WC.test(e.name)).sort((a, b) => new Date(a.date) - new Date(b.date));
+  if (!matches.length) return false;
+  const url = `${config.siteBase}/worldcup.html`;
+  const ld = matches.map(e => {
+    const min = curMin(e);
+    return {
+      "@context": "https://schema.org", "@type": "Event",
+      name: e.name, startDate: e.date, eventStatus: "https://schema.org/EventScheduled",
+      location: { "@type": "Place", name: e.venue, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: "BC", addressCountry: "CA" } },
+      ...(min != null ? { offers: { "@type": "AggregateOffer", lowPrice: min, priceCurrency: "CAD", availability: "https://schema.org/InStock", url } } : {}),
+    };
+  });
+  const blocks = matches.map(e => {
+    const min = curMin(e);
+    const buttons = merchantLinks(e).map(l =>
+      `<a class="buy" href="${esc(l.url)}" rel="sponsored noopener" target="_blank" data-goatcounter-click="wc-out-${esc(l.m)}">Check ${esc(l.label)} →</a>`).join("");
+    const hist = e.history.slice(-14).map(h => `<tr><td>${h.d}</td><td>${config.currency}${h.min}</td></tr>`).join("");
+    return `<section class="match">
+<h2>${esc(e.name.replace(/^FIFA World Cup 2026:?\s*/i, ""))}</h2>
+<div class="sub">${esc(e.venue)} · ${fmtDate(e.date)}</div>
+<div class="floor">${min != null ? `${config.currency}${min}<span> CAD floor today</span>` : "<span>price not yet listed</span>"}</div>
+${e.dropPct > 0 ? `<div class="dropline">↓ ${e.dropPct}% below its 14-day high</div>` : ""}
+${buttons}
+${hist ? `<details><summary>Price history</summary><table>${hist}</table></details>` : ""}
+</section>`;
+  }).join("\n");
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Cup Vancouver ticket prices — live floor-price tracker | ${esc(config.siteName)}</title>
+<meta name="description" content="What do FIFA World Cup 2026 tickets cost in Vancouver right now? Live resale floor prices for every match at BC Place, tracked daily with full price history.">
+<link rel="canonical" href="${esc(url)}">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate" type="application/rss+xml" title="${esc(config.siteName)} deals feed" href="feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(config.siteName)}">
+<meta property="og:title" content="World Cup Vancouver ticket prices — tracked daily">
+<meta property="og:description" content="Live resale floor prices for every World Cup match at BC Place, updated every morning.">
+<meta property="og:url" content="${esc(url)}">
+<meta property="og:image" content="${esc(config.siteBase)}/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${goatTag()}
+<style>body{font-family:-apple-system,system-ui,sans-serif;background:#0e1116;color:#e8eaed;max-width:680px;margin:0 auto;padding:28px 20px;line-height:1.55}
+a{color:#5cc8ff}h1{font-size:26px;letter-spacing:-0.8px;margin:14px 0 6px}
+.brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;letter-spacing:-0.4px;text-decoration:none;color:#e8eaed}
+.brand img{width:22px;height:22px}.brand .dot{color:#5cc8ff}
+.lede{color:#9aa0a6;font-size:14.5px;margin-bottom:6px}
+.upd{color:#9aa0a6;font-size:12px;margin-bottom:22px}
+.match{background:#161b22;border:1px solid #2a2f36;border-radius:14px;padding:18px;margin-bottom:14px}
+.match h2{font-size:19px;letter-spacing:-0.4px}
+.sub{color:#9aa0a6;font-size:13px;margin:2px 0 10px}
+.floor{font-size:34px;font-weight:700;color:#34d399}
+.floor span{font-size:13px;color:#9aa0a6;font-weight:400}
+.dropline{color:#34d399;font-size:13px;font-weight:600;margin-top:2px}
+.buy{display:block;background:#1a73e8;color:#fff;text-decoration:none;text-align:center;padding:12px;border-radius:10px;font-weight:600;margin:9px 0}
+.buy:first-of-type{background:#1a9e72;margin-top:14px}
+details{margin-top:10px}summary{color:#9aa0a6;font-size:13px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px}td{padding:6px 4px;border-bottom:1px solid #2a2f36;color:#bdc1c6}
+.note{font-size:12px;color:#9aa0a6;margin-top:24px}</style></head><body>
+<a class="brand" href="index.html"><img src="favicon.svg" alt="">${esc(config.siteName)}<span class="dot">.</span></a>
+<h1>⚽ World Cup Vancouver ticket prices</h1>
+<p class="lede">The resale floor price for every FIFA World Cup 2026 match at BC Place — checked every morning, with full history, so you can buy the dip instead of guessing.</p>
+<p class="upd">Last refreshed ${data.updated} · <a href="index.html">all Vancouver events</a> · <a href="feed.xml">get alerts</a></p>
+${blocks}
+<p class="note">Floor prices are the cheapest listed resale ticket at last refresh, before marketplace fees, and can change at any time. Some outbound links are affiliate links — purchases may earn this site a commission at no cost to you.</p>
+</body></html>`;
+  fs.writeFileSync(path.join(ROOT, "worldcup.html"), html);
+  return true;
+}
+
+function renderReport() {
+  // Weekly deal report — ready to paste into Reddit/forums (human posts it;
+  // automating community posts is a ban, not a growth channel)
+  const upcoming = data.events
+    .filter(e => new Date(e.date) >= new Date())
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
+  const drops = upcoming.filter(e => (e.dropPct || 0) > 0).sort((a, b) => b.dropPct - a.dropPct).slice(0, 5);
+  const best = upcoming.slice(0, 5);
+  const line = e => `- **${e.name}** (${e.venue}, ${fmtDate(e.date)}) — floor ${curMin(e) != null ? config.currency + curMin(e) : "n/a"}${e.dropPct > 0 ? `, ↓${e.dropPct}% vs 14-day high` : ""}`;
+  const md = `# ${config.city} ticket deal report — ${today}
+
+${drops.length ? `**Biggest price drops this week**\n${drops.map(line).join("\n")}\n` : ""}
+**Best value right now**
+${best.map(line).join("\n")}
+
+*Floor prices (cheapest listed seat, before fees) checked daily across StubHub, TickPick, Ticketmaster and Vivid Seats. Full history per event: ${config.siteBase}/index.html*
+`;
+  fs.writeFileSync(path.join(ROOT, "report.md"), md);
+}
+
 function render() {
   const dir = path.join(ROOT, "e");
   fs.mkdirSync(dir, { recursive: true });
@@ -343,13 +459,19 @@ function render() {
   for (const f of fs.readdirSync(dir)) {
     if (f.endsWith(".html") && !slugs.has(f)) fs.unlinkSync(path.join(dir, f));
   }
-  const urls = [`${config.siteBase}/index.html`, ...[...slugs].map(s => `${config.siteBase}/e/${s}`)];
+  const hasWC = renderWorldCup();
+  renderReport();
+  const urls = [
+    `${config.siteBase}/index.html`,
+    ...(hasWC ? [`${config.siteBase}/worldcup.html`] : []),
+    ...[...slugs].map(s => `${config.siteBase}/e/${s}`),
+  ];
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map(u => `  <url><loc>${esc(u)}</loc><lastmod>${today}</lastmod></url>`).join("\n") + "\n</urlset>\n");
   bakeIndex();
   renderFeed();
-  console.log(`Rendered ${slugs.size} event pages, baked index, sitemap + RSS.`);
+  console.log(`Rendered ${slugs.size} event pages${hasWC ? " + World Cup tracker" : ""}, weekly report, baked index, sitemap + RSS.`);
 }
 
 // ── MAIN ─────────────────────────────────────────────────────────────────

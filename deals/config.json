@@ -17,6 +17,9 @@
   "analytics": {
     "goatcounter": ""
   },
+  "telegram": {
+    "channelUrl": ""
+  },
   "merchants": {
     "stubhub": {
       "label": "StubHub",
@@ -48,6 +51,7 @@
     "priority": "Button order on event pages — put the highest effective commission first (StubHub ~4% fast payout, TickPick 4% slow payout, Ticketmaster up to 5% resale but ~1.5% primary, Vivid 1-2%). Re-order once you see real EPC per merchant in your analytics.",
     "analytics.goatcounter": "Free, privacy-friendly analytics. Sign up at goatcounter.com and put your https://YOURCODE.goatcounter.com/count URL here — pageviews plus per-merchant outbound click counts appear automatically.",
     "ntfy.opsTopic": "Private topic for YOU: the GitHub Action pings it if a refresh run fails, so the site can never go silently stale. Subscribe in the ntfy app.",
+    "telegram.channelUrl": "Public invite link to your Telegram channel (e.g. https://t.me/VancouverTicketDrops). Shown in the alerts modal. Sending requires TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID repo secrets — see TODO.md.",
     "siteBase": "Change when you move to a custom domain. Used for canonical URLs, sitemap, RSS and alert links."
   }
 }

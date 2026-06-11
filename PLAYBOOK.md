@@ -97,6 +97,9 @@ GitHub Action (daily, 7am Pacific)
 | New on-sales were invisible | On-sale day is the highest-intent moment in tickets | **New-event alerts** to the public topic (digest if >5, suppressed on first activation run so it doesn't spam 200 events) |
 | 6 events seeded | Thin launch surface | **12 real events** incl. three World Cup matches ($323–634 floors) and four Whitecaps games |
 
+> **Start here for launch:** the step-by-step weekend checklist with templates
+> lives in [TODO.md](TODO.md). The list below is the condensed version.
+
 ## 4. Activation checklist (the only manual hour this needs)
 
 Things that legally require a human (identity, tax, banking):

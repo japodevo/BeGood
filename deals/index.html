@@ -3,25 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RainCheck — Vancouver's ticket deal radar. Live floor prices, updated daily.</title>
-<meta name="description" content="The cheapest ticket for every big Vancouver event — Canucks, concerts at Rogers Arena and BC Place, comedy and more. Floor prices tracked daily, price-drop alerts free.">
+<title>RainCheck — never overpay for Vancouver tickets</title>
+<meta name="description" content="RainCheck tracks the cheapest seat for every big Vancouver event daily — World Cup, Canucks, concerts at Rogers Arena and BC Place — across StubHub, TickPick, Ticketmaster and Vivid Seats. Free price-drop alerts.">
 <link rel="canonical" href="https://japodevo.github.io/BeGood/deals/index.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="RainCheck deals feed" href="feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RainCheck">
+<meta property="og:title" content="RainCheck — never overpay for Vancouver tickets">
+<meta property="og:description" content="The cheapest seat for every big Vancouver event, checked daily. Free price-drop alerts.">
+<meta property="og:url" content="https://japodevo.github.io/BeGood/deals/index.html">
+<meta property="og:image" content="https://japodevo.github.io/BeGood/deals/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How does RainCheck find cheap Vancouver tickets?","acceptedAnswer":{"@type":"Answer","text":"RainCheck checks the cheapest available seat (the floor price) for major Vancouver events every day and keeps the full price history. Each event is scored against comparable events and its own recent prices, so you can see whether today's price is actually a deal."}},
+{"@type":"Question","name":"Is the floor price the final price?","acceptedAnswer":{"@type":"Answer","text":"The floor price is the cheapest listed ticket at our last daily refresh, before marketplace fees. Fees differ by marketplace — TickPick shows all-in pricing with no added fees, while others add fees at checkout — so compare a couple of the listed marketplaces before buying."}},
+{"@type":"Question","name":"How do the free price-drop alerts work?","acceptedAnswer":{"@type":"Answer","text":"Subscribe to the RainCheck topic in the free ntfy app, follow the RSS feed, or join the Telegram channel. Whenever a tracked event's floor price falls 10% or more, an alert goes out automatically — no account or email required."}},
+{"@type":"Question","name":"Does RainCheck sell tickets?","acceptedAnswer":{"@type":"Answer","text":"No. RainCheck is an independent price tracker. We link out to established marketplaces like StubHub, TickPick, Ticketmaster and Vivid Seats. Some links are affiliate links, which may earn this site a commission at no extra cost to you."}},
+{"@type":"Question","name":"Are FIFA World Cup 2026 tickets in Vancouver getting cheaper?","acceptedAnswer":{"@type":"Answer","text":"RainCheck tracks the resale floor price for every World Cup match at BC Place daily on its World Cup tracker page, including price history, so you can see exactly which way prices are moving before you buy."}}]}
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0e1116;--card:#161b22;--card2:#1d242e;--border:#2a2f36;--text:#e8eaed;--muted:#9aa0a6;--accent:#5cc8ff;--green:#34d399;--amber:#fbbf24;--blue:#1a73e8}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
-.wrap{max-width:720px;margin:0 auto;padding:32px 20px 60px}
-header h1{font-size:30px;letter-spacing:-1px}
-header h1 .dot{color:var(--accent)}
-.tagline{color:var(--muted);font-size:14px;margin:4px 0 6px}
-.updated{font-size:12px;color:var(--muted)}
-.alert-cta{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:20px 0;cursor:pointer}
+.wrap{max-width:720px;margin:0 auto;padding:24px 20px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:9px;font-size:21px;font-weight:800;letter-spacing:-0.5px;text-decoration:none;color:var(--text)}
+.brand img{width:28px;height:28px}
+.brand .dot{color:var(--accent)}
+.yvr{font-size:10px;font-weight:800;letter-spacing:0.12em;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:2px 6px;margin-left:2px}
+.top nav a{color:var(--muted);font-size:13px;text-decoration:none;margin-left:14px}
+.top nav a:hover{color:var(--accent)}
+.hero h1{font-size:32px;letter-spacing:-1.2px;line-height:1.15;margin-bottom:10px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);font-size:15px;max-width:540px}
+.stats{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px}
+.stat b{font-size:18px;letter-spacing:-0.5px;display:block}
+.stat b.g{color:var(--green)}
+.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em}
+.updated{font-size:12px;color:var(--muted);margin:6px 0 18px}
+.wc-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(100deg,#102a43,#15314d);border:1px solid #1f4468;border-radius:14px;padding:15px 16px;margin:0 0 14px;text-decoration:none;color:var(--text);font-size:14px}
+.wc-banner:hover{border-color:var(--accent)}
+.wc-banner .ball{font-size:22px}
+.wc-banner b{display:block}
+.wc-banner span{color:var(--muted);font-size:12.5px}
+.wc-banner .go{margin-left:auto;color:var(--accent);font-weight:700}
+.alert-cta{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:0 0 22px;cursor:pointer}
 .alert-cta:hover{border-color:var(--accent)}
 .alert-cta .bell{font-size:22px}
 .alert-cta b{font-size:14px}
 .alert-cta span{font-size:12px;color:var(--muted);display:block}
-.chips{display:flex;gap:8px;margin:18px 0 20px;flex-wrap:wrap}
+.controls{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 16px;color:var(--text);font-size:13.5px;outline:none;font-family:inherit}
+.search::placeholder{color:var(--muted)}
+.search:focus{border-color:var(--accent)}
+.chips{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap}
 .chip{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
 .chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:block;text-decoration:none;color:inherit}
@@ -39,6 +77,18 @@ header h1 .dot{color:var(--accent)}
 .badge.drop{background:rgba(52,211,153,0.12);color:var(--green)}
 .badge.genre{background:var(--card2);color:var(--muted);font-weight:600}
 .empty{color:var(--muted);text-align:center;padding:40px 0;font-size:14px}
+.how{margin:38px 0 8px}
+.how h2,.faq h2{font-size:20px;letter-spacing:-0.5px;margin-bottom:14px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.step .n{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.step b{font-size:14px;display:block;margin-bottom:4px}
+.step p{font-size:12.5px;color:var(--muted)}
+.faq{margin:34px 0 0}
+.faq details{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:8px}
+.faq summary{font-size:14px;font-weight:600;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq p{font-size:13px;color:var(--muted);margin-top:8px}
 footer{margin-top:36px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:18px}
 footer a{color:var(--accent)}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -47,22 +97,36 @@ footer a{color:var(--accent)}
 .modal p,.modal li{font-size:14px;color:var(--muted);margin-bottom:8px}
 .modal ol{padding-left:20px}
 .modal code{background:var(--card2);padding:2px 8px;border-radius:6px;color:var(--accent);font-size:13px}
+.modal a{color:var(--accent)}
 .modal button{margin-top:12px;width:100%;padding:11px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-weight:600;cursor:pointer;font-size:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>RainCheck<span class="dot">.</span></h1>
-    <div class="tagline">Vancouver's ticket deal radar — live floor prices for every big event, tracked daily.</div>
-    <div class="updated" id="updated"><!-- RAINCHECK:UPDATED -->Prices last refreshed 2026-06-11 · 12 events tracked<!-- /RAINCHECK:UPDATED --></div>
+  <header class="top">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="">RainCheck<span class="dot">.</span><span class="yvr">YVR</span></a>
+    <nav><a href="worldcup.html">World Cup</a><a href="feed.xml">RSS</a></nav>
   </header>
+
+  <section class="hero">
+    <h1>Never overpay for <em>Vancouver</em> tickets.</h1>
+    <p>RainCheck checks the cheapest seat for every big event in the city — every day, across StubHub, TickPick, Ticketmaster and Vivid Seats — and flags the real deals.</p>
+    <div class="stats" id="stats"></div>
+    <div class="updated" id="updated"><!-- RAINCHECK:UPDATED -->Prices last refreshed 2026-06-11 · 12 events tracked<!-- /RAINCHECK:UPDATED --></div>
+  </section>
+
+  <a class="wc-banner" href="worldcup.html">
+    <span class="ball">⚽</span>
+    <span><b>The World Cup is in Vancouver</b><span>Live floor-price tracker for every match at BC Place</span></span>
+    <span class="go">→</span>
+  </a>
 
   <div class="alert-cta" onclick="document.getElementById('alert-modal').style.display='flex'">
     <div class="bell">🔔</div>
     <div><b>Free price-drop alerts</b><span>Get pinged the moment a Vancouver event's floor price falls 10%+</span></div>
   </div>
 
+  <div class="controls"><input class="search" id="search" type="search" placeholder="Search events, venues…" oninput="q=this.value;render()"></div>
   <div class="chips" id="chips"></div>
   <div id="list"><!-- RAINCHECK:LIST -->
 <a class="card" href="e/austin-fc-at-vancouver-whitecaps-fc-sh-159920635.html">
@@ -151,29 +215,43 @@ footer a{color:var(--accent)}
 </a>
 <!-- /RAINCHECK:LIST --></div>
 
+  <section class="how">
+    <h2>How RainCheck works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><b>We track floors daily</b><p>Every day we record the cheapest available seat for each major Vancouver event and keep the full history.</p></div>
+      <div class="step"><div class="n">2</div><b>We score the deal</b><p>Prices are compared against similar events and the event's own 14-day high — so "🔥 Hot deal" means something.</p></div>
+      <div class="step"><div class="n">3</div><b>You buy at the dip</b><p>Compare marketplaces in one tap, or wait for a free alert when the price actually drops.</p></div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>How does RainCheck find cheap Vancouver tickets?</summary><p>We check the cheapest available seat (the floor price) for major Vancouver events every day and keep the full price history. Each event is scored against comparable events and its own recent prices, so you can see whether today's price is actually a deal.</p></details>
+    <details><summary>Is the floor price the final price?</summary><p>It's the cheapest listed ticket at our last daily refresh, before marketplace fees. Fees differ by marketplace — TickPick shows all-in pricing with no added fees, while others add fees at checkout — so compare a couple of marketplaces before buying.</p></details>
+    <details><summary>How do the free alerts work?</summary><p>Subscribe via the free ntfy app, the RSS feed, or our Telegram channel. When a tracked event's floor drops 10%+, the alert goes out automatically. No account, no email, no spam.</p></details>
+    <details><summary>Does RainCheck sell tickets?</summary><p>No — we're an independent price tracker and link out to established marketplaces. Some links are affiliate links, which may earn this site a commission at no extra cost to you.</p></details>
+  </section>
+
   <footer>
-    <p><b>How this works:</b> RainCheck checks the cheapest available ticket for major Vancouver events every day and scores each event on how good a deal it is right now versus comparable events and its own recent prices.</p>
     <p><b>Disclosure:</b> some outbound links are affiliate links — if you buy after clicking, this site may earn a commission at no extra cost to you. Prices shown are floor prices at last refresh and can change at any time.</p>
-    <p><a href="feed.xml">RSS feed</a> — price drops &amp; new on-sales, no app needed.</p>
+    <p><a href="feed.xml">RSS feed</a> · <a href="worldcup.html">World Cup tracker</a> · RainCheck is made in Vancouver ☔</p>
   </footer>
 </div>
 
 <div class="modal-bg" id="alert-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
   <div class="modal">
-    <h3>🔔 Price-drop alerts</h3>
-    <p>Alerts are pushed through the free <a href="https://ntfy.sh" target="_blank" rel="noopener" style="color:var(--accent)">ntfy</a> app — no account, no email, no spam.</p>
-    <ol>
-      <li>Install <b>ntfy</b> (App Store / Play Store)</li>
-      <li>Tap + and subscribe to the topic:</li>
-    </ol>
-    <p style="text-align:center;margin:12px 0"><code id="topic-code">raincheck-yvr</code></p>
-    <p>That's it — you'll get a push whenever a tracked event's floor price drops 10% or more.</p>
+    <h3>🔔 Price-drop alerts, three ways</h3>
+    <p id="tg-row" style="display:none"><b>Telegram:</b> join <a id="tg-link" href="#" target="_blank" rel="noopener">our channel</a> — easiest option.</p>
+    <p><b>Push (ntfy):</b> install the free <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy</a> app, tap +, subscribe to:</p>
+    <p style="text-align:center;margin:10px 0"><code id="topic-code">raincheck-yvr</code></p>
+    <p><b>RSS:</b> follow <a href="feed.xml">feed.xml</a> in any reader.</p>
+    <p>Alerts fire automatically whenever a tracked event's floor price drops 10%+ or a notable event goes on sale.</p>
     <button onclick="document.getElementById('alert-modal').style.display='none'">Done</button>
   </div>
 </div>
 
 <script>
-let CFG=null,DATA=null,filter='all';
+let CFG=null,DATA=null,filter='all',q='';
 const FILTERS=[
   {id:'all',label:'All'},
   {id:'week',label:'This week'},
@@ -196,6 +274,10 @@ function trend(e){
   return '';
 }
 function matches(e){
+  if(q){
+    const hay=(e.name+' '+e.venue+' '+e.genre).toLowerCase();
+    if(!hay.includes(q.toLowerCase()))return false;
+  }
   const min=(e.history.at(-1)||{}).min;
   if(filter==='week')return (new Date(e.date)-new Date())<7*86400000;
   if(filter==='sports')return SPORT.test(e.genre);
@@ -203,6 +285,16 @@ function matches(e){
   if(filter==='music')return !SPORT.test(e.genre)&&!COMEDY.test(e.genre);
   if(filter==='under100')return min!=null&&min<100;
   return true;
+}
+function renderStats(){
+  const upcoming=DATA.events.filter(e=>new Date(e.date)>=new Date(new Date().toDateString()));
+  const mins=upcoming.map(e=>(e.history.at(-1)||{}).min).filter(m=>m!=null);
+  const bigDrop=Math.max(0,...upcoming.map(e=>e.dropPct||0));
+  const cur=CFG.currency||'$';
+  document.getElementById('stats').innerHTML=
+    `<div class="stat"><b>${upcoming.length}</b><span>events tracked</span></div>`+
+    `<div class="stat"><b class="g">${cur}${mins.length?Math.min(...mins):'—'}</b><span>cheapest floor</span></div>`+
+    (bigDrop>0?`<div class="stat"><b class="g">↓${bigDrop}%</b><span>biggest drop</span></div>`:'');
 }
 function render(){
   document.getElementById('chips').innerHTML=FILTERS.map(f=>
@@ -217,7 +309,7 @@ function render(){
     return `<a class="card" href="e/${slug}.html">
       <div class="row">
         <div><div class="ev-name">${e.name}</div><div class="ev-meta">${e.venue} · ${fmtDate(e.date)}</div></div>
-        <div class="price-box"><div class="from">from</div><div class="price">${cur}${min!=null?min:'—'}${trend(e)}</div></div>
+        <div class="price-box"><div class="from">from</div><div class="price">${min!=null?cur+min:'—'}${trend(e)}</div></div>
       </div>
       <div class="badges">
         ${hot?'<span class="badge hot">🔥 Hot deal</span>':''}${good?'<span class="badge good">Good value</span>':''}
@@ -225,15 +317,19 @@ function render(){
         <span class="badge genre">${e.genre}</span>
       </div>
     </a>`;
-  }).join(''):'<div class="empty">No events match this filter right now.</div>';
+  }).join(''):'<div class="empty">No events match. Try clearing the search or filters.</div>';
 }
 // The baked-in static list (rendered at build time for crawlers and as a
 // no-JS fallback) is replaced by the interactive version once data loads.
 Promise.all([fetch('config.json').then(r=>r.json()),fetch('data.json').then(r=>r.json())]).then(([c,d])=>{
   CFG=c;DATA=d;
-  document.getElementById('updated').textContent='Prices last refreshed '+d.updated+' · '+d.events.length+' events tracked';
+  document.getElementById('updated').textContent='Prices last refreshed '+d.updated;
   document.getElementById('topic-code').textContent=c.ntfy?.topic||'raincheck-yvr';
-  render();
+  if(c.telegram&&c.telegram.channelUrl){
+    document.getElementById('tg-row').style.display='block';
+    document.getElementById('tg-link').href=c.telegram.channelUrl;
+  }
+  renderStats();render();
   if(c.analytics&&c.analytics.goatcounter){
     const s=document.createElement('script');
     s.dataset.goatcounter=c.analytics.goatcounter;
