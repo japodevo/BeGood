@@ -21,7 +21,27 @@
         }
       ],
       "dropPct": 0,
-      "score": 58
+      "score": 33
+    },
+    {
+      "id": "sh-153020467",
+      "src": "seed",
+      "name": "FIFA World Cup 2026: Switzerland at BC Place",
+      "date": "2026-06-24T12:00:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/153020467/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 634
+        }
+      ],
+      "dropPct": 0,
+      "score": 26
     },
     {
       "id": "sh-160413431",
@@ -40,6 +60,46 @@
         {
           "d": "2026-06-11",
           "min": 120
+        }
+      ],
+      "dropPct": 0,
+      "score": 50
+    },
+    {
+      "id": "sh-153020469",
+      "src": "seed",
+      "name": "FIFA World Cup 2026: Belgium at BC Place",
+      "date": "2026-06-26T20:00:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/153020469/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 421
+        }
+      ],
+      "dropPct": 0,
+      "score": 25
+    },
+    {
+      "id": "sh-161141231",
+      "src": "seed",
+      "name": "Cavalry FC at Vancouver Whitecaps FC",
+      "date": "2026-07-08T19:30:00",
+      "venue": "Swangard Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/161141231/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 62
         }
       ],
       "dropPct": 0,
@@ -90,6 +150,26 @@
       "score": 50
     },
     {
+      "id": "sh-159920602",
+      "src": "seed",
+      "name": "LAFC at Vancouver Whitecaps FC",
+      "date": "2026-08-01T16:30:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159920602/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 46
+        }
+      ],
+      "dropPct": 0,
+      "score": 56
+    },
+    {
       "id": "sh-159784074",
       "src": "seed",
       "name": "AC/DC",
@@ -112,6 +192,26 @@
       "score": 47
     },
     {
+      "id": "sh-159920607",
+      "src": "seed",
+      "name": "Houston Dynamo at Vancouver Whitecaps FC",
+      "date": "2026-08-19T19:30:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159920607/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 24
+        }
+      ],
+      "dropPct": 0,
+      "score": 65
+    },
+    {
       "id": "sh-160770818",
       "src": "seed",
       "name": "Weezer",
@@ -132,6 +232,26 @@
       ],
       "dropPct": 0,
       "score": 53
+    },
+    {
+      "id": "sh-159920635",
+      "src": "seed",
+      "name": "Austin FC at Vancouver Whitecaps FC",
+      "date": "2026-09-13T15:30:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159920635/"
+      },
+      "history": [
+        {
+          "d": "2026-06-11",
+          "min": 20
+        }
+      ],
+      "dropPct": 0,
+      "score": 67
     }
   ]
 }

@@ -10,24 +10,44 @@
   "lookAheadDays": 150,
   "ntfy": {
     "topic": "raincheck-yvr",
-    "dropThresholdPct": 10
+    "opsTopic": "raincheck-ops-japodevo",
+    "dropThresholdPct": 10,
+    "newEventAlerts": true
+  },
+  "analytics": {
+    "goatcounter": ""
   },
   "merchants": {
-    "ticketmaster": {
-      "label": "Ticketmaster",
-      "template": ""
-    },
     "stubhub": {
       "label": "StubHub",
-      "template": ""
+      "priority": 1,
+      "template": "",
+      "search": "https://www.stubhub.com/find/s/?q={q}"
     },
     "tickpick": {
-      "label": "TickPick",
-      "template": ""
+      "label": "TickPick (no fees)",
+      "priority": 2,
+      "template": "",
+      "search": "https://www.tickpick.com/search?q={q}"
+    },
+    "ticketmaster": {
+      "label": "Ticketmaster",
+      "priority": 3,
+      "template": "",
+      "search": "https://www.ticketmaster.ca/search?q={q}"
+    },
+    "vividseats": {
+      "label": "Vivid Seats",
+      "priority": 4,
+      "template": "",
+      "search": "https://www.vividseats.com/search?searchTerm={q}"
     }
   },
   "_notes": {
     "template": "Affiliate tracking template per merchant. Use {url} as the encoded deep-link placeholder. Examples — Impact: https://ticketmaster.pxf.io/c/PUBID/ADID/CAMPID?u={url} · Partnerize: https://prf.hn/click/camref:CAMREF/destination:{url} · Leave empty to use plain links until your affiliate accounts are approved.",
-    "siteBase": "Change when you move to a custom domain. Used for canonical URLs and sitemap."
+    "priority": "Button order on event pages — put the highest effective commission first (StubHub ~4% fast payout, TickPick 4% slow payout, Ticketmaster up to 5% resale but ~1.5% primary, Vivid 1-2%). Re-order once you see real EPC per merchant in your analytics.",
+    "analytics.goatcounter": "Free, privacy-friendly analytics. Sign up at goatcounter.com and put your https://YOURCODE.goatcounter.com/count URL here — pageviews plus per-merchant outbound click counts appear automatically.",
+    "ntfy.opsTopic": "Private topic for YOU: the GitHub Action pings it if a refresh run fails, so the site can never go silently stale. Subscribe in the ntfy app.",
+    "siteBase": "Change when you move to a custom domain. Used for canonical URLs, sitemap, RSS and alert links."
   }
 }

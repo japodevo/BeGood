@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: raincheck-refresh
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -31,3 +36,13 @@ jobs:
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "data: daily price refresh $(date -u +%F)"
           git push
+
+      - name: Alert ops topic on failure
+        if: failure()
+        run: |
+          TOPIC=$(node -p "require('./deals/config.json').ntfy.opsTopic||''")
+          if [ -n "$TOPIC" ]; then
+            curl -s -X POST "https://ntfy.sh/$TOPIC" \
+              -H "Title: RainCheck refresh FAILED" -H "Priority: high" \
+              -d "Daily refresh failed — site data will go stale. Check the Actions tab: https://github.com/${{ github.repository }}/actions"
+          fi

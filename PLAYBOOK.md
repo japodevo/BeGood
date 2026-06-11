@@ -83,6 +83,20 @@ GitHub Action (daily, 7am Pacific)
 - Affiliate links are config-driven (`deals/config.json` → `merchants.*.template`),
   so plain links work today and switch to tracked links the minute you're approved.
 
+## 3b. Hardening pass (gaps found and closed)
+
+| Gap | Risk | Fix shipped |
+|---|---|---|
+| Index rendered client-side only | Crawlers saw an empty page — fatal for the SEO channel | Event list is now **baked into index.html at build time** (static HTML for bots + no-JS fallback); client JS upgrades it to the interactive version |
+| Events without published price ranges were dropped | Lost long-tail pages (many TM events ship no priceRanges) | Kept with "compare live prices" pages — they still earn SEO + commissions, just no history chart |
+| One merchant button per fetched event | Single cookie shot per visitor, no commission routing | Every event page now shows **all four marketplaces**, ordered by `priority` in config (highest effective commission first); unknown deep links fall back to auto-generated search links |
+| Seed events would duplicate once the TM feed activates | Duplicate pages, split price history | Merge now **dedupes by date + venue/name-token similarity** (unit-tested against World Cup and tour-name variants) |
+| Zero analytics | Can't reorder merchants by EPC, can't see what converts | Optional **GoatCounter** (free) — one config line adds pageviews + per-merchant outbound click counts (`data-goatcounter-click`) |
+| ntfy-only audience capture | Most people won't install a push app | **RSS feed** (`feed.xml`) of price drops + new on-sales, auto-generated; linked from every page |
+| Silent pipeline failure → quietly stale site | Dead site = dead revenue, discovered weeks later | API retries with backoff, workflow concurrency guard + timeout, and a **failure ping to a private ops ntfy topic** |
+| New on-sales were invisible | On-sale day is the highest-intent moment in tickets | **New-event alerts** to the public topic (digest if >5, suppressed on first activation run so it doesn't spam 200 events) |
+| 6 events seeded | Thin launch surface | **12 real events** incl. three World Cup matches ($323–634 floors) and four Whitecaps games |
+
 ## 4. Activation checklist (the only manual hour this needs)
 
 Things that legally require a human (identity, tax, banking):
@@ -101,14 +115,26 @@ Things that legally require a human (identity, tax, banking):
    link — examples in the file). Commit. Done — every link on every page is now
    monetized.
 5. **Google Search Console**: verify the site, submit `deals/sitemap.xml`.
-6. Optional but high-leverage: a custom domain (e.g. raincheck.ca, ~$15/yr) —
-   update `siteBase` in config. Affiliate networks approve real domains faster.
+6. **Custom domain — treat as near-required** (e.g. raincheck.ca, ~$15/yr):
+   affiliate networks routinely reject `github.io` subpaths and approve real
+   domains. Update `siteBase` in config after pointing it at Pages.
+7. **GoatCounter** (free, ~3 min): sign up at goatcounter.com, paste your
+   count URL into `analytics.goatcounter` in config — you get pageviews and
+   per-merchant outbound click counts with no cookie banner needed.
+8. **Subscribe to the ops topic** (`ntfy.opsTopic` in config) in your ntfy
+   app — you'll be pinged if a daily refresh ever fails.
 
 ## 5. Growth levers (in order of ROI)
 
-1. **Ride the World Cup wave now** — matches run through July 7 at BC Place. One
-   helpful comment with the live floor-price page where people are already asking
-   (r/vancouver match threads) is distribution; do it as a fan, not a spammer.
+1. **Ride the World Cup wave now** — three matches are already tracked (June 13,
+   Switzerland June 24 at a $634 floor, Belgium June 26 at $421). At ~4%, one
+   referred order from these pages is **$13–25+**. One helpful comment with the
+   live floor-price page where people are already asking (r/vancouver match
+   threads) is distribution; do it as a fan, not a spammer.
+1b. **Optimize merchant order with data** — once GoatCounter shows real clicks
+   per merchant and Impact/Partnerize show conversions, reorder `priority` in
+   config so the best earner-per-click gets the top (green) button. This is the
+   single cheapest profit lever in the whole system.
 2. **Grow the alert topic** — every ntfy subscriber is a recurring, zero-cost,
    high-intent channel you own. Put the topic name everywhere the site is shared.
 3. **Clone cities** — the pipeline is config-driven. Toronto, Calgary, Seattle are
