@@ -295,6 +295,9 @@ ${e.dropPct > 0 ? `<div style="color:#34d399;font-size:13px;font-weight:600">↓
   const desc = min != null
     ? `Live floor price for ${e.name} at ${e.venue} on ${fmtDate(e.date)}: ${config.currency}${min}. Daily-updated price history and the cheapest place to buy.`
     : `${e.name} at ${e.venue} on ${fmtDate(e.date)} — compare ticket prices across marketplaces.`;
+  const floorNote = e.floorOnly
+    ? `<div class="fnote">ℹ️ This is a FIFA World Cup match. Resale runs through official and partner marketplaces, so we track the live floor price daily — seat-by-seat maps open when you tap through to buy.</div>`
+    : "";
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cheapest ${esc(e.name)} tickets — ${esc(e.venue)}, ${fmtDate(e.date)} | ${esc(config.siteName)}</title>
@@ -317,6 +320,7 @@ a{color:#5cc8ff}h1{font-size:24px;letter-spacing:-0.5px;margin-bottom:4px}.sub{c
 .buy:first-of-type{background:#1a9e72}
 table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}td{padding:7px 4px;border-bottom:1px solid #2a2f36;color:#bdc1c6}
 .note{font-size:12px;color:#9aa0a6;margin-top:24px}.back{font-size:13px}
+.fnote{background:#15314d;border:1px solid #1f4468;border-radius:10px;padding:11px 13px;font-size:12.5px;color:#bcd6ef;margin:12px 0}
 .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;letter-spacing:-0.4px;text-decoration:none;color:#e8eaed;margin-bottom:18px}
 .brand img{width:22px;height:22px}.brand .dot{color:#5cc8ff}</style></head><body>
 <a class="brand" href="../index.html"><img src="../favicon.svg" alt="">${esc(config.siteName)}<span class="dot">.</span></a>
@@ -324,6 +328,7 @@ table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}td{paddi
 <h1>${esc(e.name)}</h1>
 <div class="sub">${esc(e.venue)} · ${fmtDate(e.date)} · ${esc(e.genre)}</div>
 ${priceBlock}
+${floorNote}
 ${buttons}
 ${rows ? `<div class="lbl" style="margin-top:26px">Price history (floor)</div>\n<table>${rows}</table>` : ""}
 <p class="note">Prices refresh daily and can change at any time. Some outbound links are affiliate links — purchases may earn this site a commission at no cost to you. Updated ${data.updated}.</p>

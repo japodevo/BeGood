@@ -4,7 +4,7 @@
     {
       "id": "sh-153020454",
       "src": "seed",
-      "name": "FIFA World Cup 2026 — Match at BC Place",
+      "name": "World Cup: Australia vs Turkey (Group D)",
       "date": "2026-06-13T21:00:00",
       "venue": "BC Place Stadium",
       "city": "Vancouver",
@@ -25,7 +25,8 @@
         }
       ],
       "dropPct": 0,
-      "score": 35
+      "score": 40,
+      "floorOnly": true
     },
     {
       "id": "sh-159873230",
@@ -50,9 +51,30 @@
       "score": 59
     },
     {
+      "id": "sh-153020461",
+      "src": "seed",
+      "name": "World Cup: Canada vs Qatar (Group B)",
+      "date": "2026-06-18T15:00:00",
+      "venue": "BC Place Stadium",
+      "city": "Vancouver",
+      "genre": "Soccer",
+      "floorOnly": true,
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/153020461/"
+      },
+      "history": [
+        {
+          "d": "2026-06-13",
+          "min": 639
+        }
+      ],
+      "dropPct": 0,
+      "score": 32
+    },
+    {
       "id": "sh-153020467",
       "src": "seed",
-      "name": "FIFA World Cup 2026: Switzerland at BC Place",
+      "name": "World Cup: Switzerland vs Canada (Group B)",
       "date": "2026-06-24T12:00:00",
       "venue": "BC Place Stadium",
       "city": "Vancouver",
@@ -64,10 +86,15 @@
         {
           "d": "2026-06-11",
           "min": 634
+        },
+        {
+          "d": "2026-06-13",
+          "min": 802
         }
       ],
       "dropPct": 0,
-      "score": 27
+      "score": 27,
+      "floorOnly": true
     },
     {
       "id": "sh-160413431",
@@ -96,24 +123,25 @@
       "score": 51
     },
     {
-      "id": "sh-153020469",
+      "id": "sh-153020500",
       "src": "seed",
-      "name": "FIFA World Cup 2026: Belgium at BC Place",
-      "date": "2026-06-26T20:00:00",
+      "name": "World Cup: Round of 16 (Match 96)",
+      "date": "2026-07-07T13:00:00",
       "venue": "BC Place Stadium",
       "city": "Vancouver",
       "genre": "Soccer",
+      "floorOnly": true,
       "urls": {
-        "stubhub": "https://www.stubhub.com/event/153020469/"
+        "stubhub": "https://www.stubhub.com/event/153020500/"
       },
       "history": [
         {
-          "d": "2026-06-11",
-          "min": 421
+          "d": "2026-06-13",
+          "min": 1291
         }
       ],
       "dropPct": 0,
-      "score": 26
+      "score": 25
     },
     {
       "id": "sh-161141231",
@@ -133,7 +161,7 @@
         }
       ],
       "dropPct": 0,
-      "score": 50
+      "score": 70
     },
     {
       "id": "sh-160227358",
@@ -205,7 +233,7 @@
         }
       ],
       "dropPct": 0,
-      "score": 56
+      "score": 71
     },
     {
       "id": "sh-159784074",
@@ -255,7 +283,7 @@
         }
       ],
       "dropPct": 0,
-      "score": 65
+      "score": 73
     },
     {
       "id": "sh-160770818",
@@ -301,10 +329,22 @@
         }
       ],
       "dropPct": 0,
-      "score": 67
+      "score": 73
     }
   ],
   "feedItems": [
+    {
+      "d": "2026-06-13",
+      "title": "↓ 12%: Chris Stapleton now $273",
+      "link": "https://japodevo.github.io/BeGood/deals/e/chris-stapleton-sh-160227358.html",
+      "desc": "Rogers Arena, 2026-07-22 — floor price dropped from $309 to $273."
+    },
+    {
+      "d": "2026-06-13",
+      "title": "↓ 33%: AC/DC now $85",
+      "link": "https://japodevo.github.io/BeGood/deals/e/ac-dc-sh-159784074.html",
+      "desc": "BC Place Stadium, 2026-08-13 — floor price dropped from $126 to $85."
+    },
     {
       "d": "2026-06-13",
       "title": "↓ 12%: Chris Stapleton now $273",

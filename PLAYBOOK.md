@@ -146,6 +146,22 @@ Things that legally require a human (identity, tax, banking):
 4. **Canucks season (October)** — add a "tonight's game floor price" page; "cheap
    Canucks tickets" is the single best recurring query in this market.
 
+## 5b. Data-source nuances (known and handled)
+
+- **FIFA World Cup is floor-only.** World Cup resale is routed through FIFA's
+  official/partner platforms, so marketplace feeds expose a live floor price but
+  not a browsable seat map. The pipeline marks these events `floorOnly: true`:
+  the page shows the daily floor + history and links out to buy (where the seat
+  map opens), with a short note setting expectations. Floors come from the search
+  /summary endpoint, **not** the seat-level listings call (which returns
+  `eventNotFound` for FIFA events). Don't wire World Cup floors to a per-listing
+  fetch — read them from the catalog/search summary.
+- **Primary vs. resale.** Ticketmaster's Discovery API covers most concerts/sports
+  primary + resale, but FIFA primary inventory may not appear there; the four BC
+  Place World Cup matches are seeded and floor-tracked directly. Treat marquee
+  controlled events (World Cup, some festivals) as seed-and-floor, everything else
+  as fully automated via the TM feed.
+
 ## 6. Honest risks
 
 - **Affiliate approval lag** — some networks take days–weeks; links earn nothing
