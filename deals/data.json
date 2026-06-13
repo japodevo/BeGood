@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-11",
+  "updated": "2026-06-13",
   "events": [
     {
       "id": "sh-153020454",
@@ -18,10 +18,36 @@
         {
           "d": "2026-06-11",
           "min": 323
+        },
+        {
+          "d": "2026-06-13",
+          "min": 515
         }
       ],
       "dropPct": 0,
-      "score": 33
+      "score": 35
+    },
+    {
+      "id": "sh-159873230",
+      "src": "seed",
+      "name": "Alex Warren",
+      "date": "2026-06-14T19:30:00",
+      "venue": "Rogers Arena",
+      "city": "Vancouver",
+      "genre": "Pop",
+      "urls": {
+        "stubhub": "https://www.stubhub.com/event/159873230/",
+        "ticketmaster": "https://www.ticketmaster.ca/search?q=Alex%20Warren",
+        "tickpick": "https://www.tickpick.com/search?q=alex%20warren"
+      },
+      "history": [
+        {
+          "d": "2026-06-13",
+          "min": 49
+        }
+      ],
+      "dropPct": 0,
+      "score": 59
     },
     {
       "id": "sh-153020467",
@@ -41,7 +67,7 @@
         }
       ],
       "dropPct": 0,
-      "score": 26
+      "score": 27
     },
     {
       "id": "sh-160413431",
@@ -60,10 +86,14 @@
         {
           "d": "2026-06-11",
           "min": 120
+        },
+        {
+          "d": "2026-06-13",
+          "min": 141
         }
       ],
       "dropPct": 0,
-      "score": 50
+      "score": 51
     },
     {
       "id": "sh-153020469",
@@ -83,7 +113,7 @@
         }
       ],
       "dropPct": 0,
-      "score": 25
+      "score": 26
     },
     {
       "id": "sh-161141231",
@@ -122,10 +152,14 @@
         {
           "d": "2026-06-11",
           "min": 309
+        },
+        {
+          "d": "2026-06-13",
+          "min": 273
         }
       ],
-      "dropPct": 0,
-      "score": 50
+      "dropPct": 12,
+      "score": 62
     },
     {
       "id": "sh-159320062",
@@ -144,6 +178,10 @@
         {
           "d": "2026-06-11",
           "min": 41
+        },
+        {
+          "d": "2026-06-13",
+          "min": 64
         }
       ],
       "dropPct": 0,
@@ -186,10 +224,14 @@
         {
           "d": "2026-06-11",
           "min": 126
+        },
+        {
+          "d": "2026-06-13",
+          "min": 85
         }
       ],
-      "dropPct": 0,
-      "score": 47
+      "dropPct": 33,
+      "score": 81
     },
     {
       "id": "sh-159920607",
@@ -206,6 +248,10 @@
         {
           "d": "2026-06-11",
           "min": 24
+        },
+        {
+          "d": "2026-06-13",
+          "min": 26
         }
       ],
       "dropPct": 0,
@@ -228,10 +274,14 @@
         {
           "d": "2026-06-11",
           "min": 102
+        },
+        {
+          "d": "2026-06-13",
+          "min": 93
         }
       ],
-      "dropPct": 0,
-      "score": 53
+      "dropPct": 9,
+      "score": 58
     },
     {
       "id": "sh-159920635",
@@ -252,6 +302,20 @@
       ],
       "dropPct": 0,
       "score": 67
+    }
+  ],
+  "feedItems": [
+    {
+      "d": "2026-06-13",
+      "title": "↓ 12%: Chris Stapleton now $273",
+      "link": "https://japodevo.github.io/BeGood/deals/e/chris-stapleton-sh-160227358.html",
+      "desc": "Rogers Arena, 2026-07-22 — floor price dropped from $309 to $273."
+    },
+    {
+      "d": "2026-06-13",
+      "title": "↓ 33%: AC/DC now $85",
+      "link": "https://japodevo.github.io/BeGood/deals/e/ac-dc-sh-159784074.html",
+      "desc": "BC Place Stadium, 2026-08-13 — floor price dropped from $126 to $85."
     }
   ]
 }
